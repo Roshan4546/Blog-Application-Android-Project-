@@ -1,0 +1,18 @@
+<resources>
+    <string name="app_name">Blog Application</string>
+    <string name="register">Register</string>
+    <string name="new_here">New Here ?</string>
+    <string name="login">Login</string>
+    <string name="enter_your_password">Enter Your Password</string>
+    <string name="enter_your_email">Enter Your Email</string>
+    <string name="blog">Blog.</string>
+    <string name="share_your_story_nwith_us">Share your story \nwith us</string>
+    <string name="enter_your_password1">Enter your password</string>
+    <string name="enter_your_email1">Enter your email</string>
+    <string name="register1">Register</string>
+    <string name="new_here1">New Here ?</string>
+    <string name="login1">Login</string>
+    <string name="share_your_story_nwith_us1">Share your story \nwith us</string>
+    <string name="blog1">Blog.</string>
+    <string name="desing_by_n_splasher1">Desing by\n splasher</string>
+</resources>
