@@ -17,7 +17,7 @@
         android:scaleType="centerCrop"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="1.0"
@@ -48,7 +48,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <ImageView
-            android:id="@+id/profileimage"
+            android:id="@+id/profileimage2"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scaleType="centerCrop"
@@ -58,15 +58,17 @@
 
     <ImageButton
         android:id="@+id/saveArticle"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:layout_marginEnd="44dp"
         android:background="@android:color/transparent"
+        android:contentDescription="@string/save_article_button"
         app:layout_constraintBottom_toBottomOf="@+id/cardView2"
         app:layout_constraintEnd_toStartOf="@+id/cardView2"
         app:layout_constraintTop_toTopOf="@+id/cardView2"
         app:layout_constraintVertical_bias="0.6"
         app:srcCompat="@drawable/red_save" />
+
 
     <androidx.appcompat.widget.SearchView
         android:id="@+id/search_blog"
@@ -83,11 +85,16 @@
 
 
     <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/blogRecyclerview"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginTop="20dp"
-        app:layout_constraintBottom_toBottomOf="@+id/imageView2"
-        app:layout_constraintEnd_toEndOf="@+id/search_blog"
-        app:layout_constraintStart_toStartOf="@+id/search_blog"
-        app:layout_constraintTop_toBottomOf="@+id/search_blog" />
+        android:layout_marginTop="10dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/search_blog"
+        app:layout_constraintVertical_bias="0.0"
+        tools:listitem="@layout/blog_item" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
