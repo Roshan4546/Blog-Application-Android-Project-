@@ -2,52 +2,36 @@ package com.example.blogapplication.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.RecyclerView.Recycler
-import com.bumptech.glide.Glide
 import com.example.blogapplication.Model.BlogItemModel
-import com.example.blogapplication.R
-import com.example.blogapplication.databinding.ActivityWelcomeBinding
 import com.example.blogapplication.databinding.BlogItemBinding
 
-class BlogAdapter(private val items: List<BlogItemModel>) :
-    RecyclerView.Adapter<BlogAdapter.BlogViewHolder>() {
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BlogViewHolder {
+class BlogAdapter(
+    private val items: List<BlogItemModel>
+) : RecyclerView.Adapter<BlogAdapter.BlogViewHolder>() {
 
-        val inflater: LayoutInflater = LayoutInflater.from(parent.context)
-        val binding: BlogItemBinding = BlogItemBinding.inflate(inflater, parent, false)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BlogViewHolder {
+        val binding = BlogItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return BlogViewHolder(binding)
     }
 
-
     override fun onBindViewHolder(holder: BlogViewHolder, position: Int) {
-
-        holder.bind(items[position])
+        holder.bind(items[position]) // Pass listener
     }
 
-    override fun getItemCount(): Int {
-        return items.size
-    }
-
+    override fun getItemCount(): Int = items.size
 
     inner class BlogViewHolder(private val binding: BlogItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
+
         fun bind(blogItemModel: BlogItemModel) {
-            binding.heading.text = blogItemModel.heading
-//            Glide.with(binding.profileimage2.context)
-//                .load(blogItemModel.imageUrl)
-//                .placeholder(R.drawable.p1) // fallback while loading
-//                .error(R.drawable.p1)       // fallback if error
-//                .into(binding.profileimage2)
-            binding.username.text = blogItemModel.userName
-            binding.date.text = blogItemModel.date
-            binding.post.text = blogItemModel.post
-            binding.likeCount?.text = blogItemModel.likecounts.toString()
-
-
+            binding.heading2.text = blogItemModel.heading2
+            binding.username2.text = blogItemModel.username2
+            binding.date2.text = blogItemModel.date2
+            binding.post2.text = blogItemModel.post2
+            binding.likeCount2.text = blogItemModel.likeCounts2.toString()
+            
         }
-
     }
-
-
 }
