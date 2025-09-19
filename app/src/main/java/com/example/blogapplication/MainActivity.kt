@@ -1,50 +1,75 @@
+
+
 package com.example.blogapplication
 
-import android.content.res.ColorStateList
-import android.graphics.Color   // ✅ Correct import
+import BlogItemModel
+import android.content.Intent
 import android.os.Bundle
-import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import com.example.blogapplication.Model.BlogItemModel
+//import com.example.blogapplication.Model.BlogItemModel
 import com.example.blogapplication.adapter.BlogAdapter
 import com.example.blogapplication.databinding.ActivityMainBinding
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 
-class MainActivity : AppCompatActivity(), BlogAdapter.OnItemClickListener {
 
-    private lateinit var blogAdapter: BlogAdapter
-    private lateinit var recyclerView: RecyclerView
-    private val blogs = mutableListOf<BlogItemModel>()
-    private val binding : ActivityMainBinding by lazy {
+
+class MainActivity : AppCompatActivity() {
+
+    private val binding: ActivityMainBinding by lazy {
         ActivityMainBinding.inflate(layoutInflater)
     }
+
+    private lateinit var databaseReference: DatabaseReference
+    private val blogItems = mutableListOf<BlogItemModel>()
+    private lateinit var auth: FirebaseAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
-        // ✅ Set FAB background white
-        binding.floatingActionButton.backgroundTintList =
-            ColorStateList.valueOf(Color.WHITE)
+        auth = FirebaseAuth.getInstance()
+        databaseReference = FirebaseDatabase.getInstance(
+            "https://blog-app-35da3-default-rtdb.asia-southeast1.firebasedatabase.app/"
+        ).getReference("blogs")
 
-        // ✅ If you want the icon to be black:
-        binding.floatingActionButton.imageTintList =
-            ColorStateList.valueOf(Color.BLACK)
-    }
 
-    override fun onReadMoreClick(blog: BlogItemModel) {
-        Toast.makeText(this, "Read More: ${blog.heading2}", Toast.LENGTH_SHORT).show()
-    }
+        // RecyclerView setup
+        val recyclerView = binding.blogRecyclerview
+        val blogAdapter = BlogAdapter(blogItems)
+        recyclerView.adapter = blogAdapter
+        recyclerView.layoutManager = LinearLayoutManager(this)
 
-    override fun onLikeClick(blog: BlogItemModel, likeCountView: TextView) {
-        blog.likeCounts2 += 1
-        likeCountView.text = blog.likeCounts2.toString()
-        Toast.makeText(this, "Liked: ${blog.heading2}", Toast.LENGTH_SHORT).show()
-    }
+        // Fetch blogs
+        databaseReference.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                blogItems.clear() // ✅ avoid duplicates
+                for (child in snapshot.children) {
+                    val blogItem = child.getValue(BlogItemModel::class.java)
+                    if (blogItem != null) {
+                        blogItems.add(blogItem)
+                    }
+                }
 
-    override fun onSaveClick(blog: BlogItemModel) {
-        Toast.makeText(this, "Saved: ${blog.heading2}", Toast.LENGTH_SHORT).show()
+//                reverse content
+                blogItems.reverse()
+                blogAdapter.notifyDataSetChanged()
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Toast.makeText(this@MainActivity, "Blog loading failed", Toast.LENGTH_SHORT).show()
+            }
+        })
+
+        // Floating button → Add Article
+        binding.floatingAddArticlButton.setOnClickListener {
+            startActivity(Intent(this, AddArticleActivity::class.java))
+        }
     }
 }

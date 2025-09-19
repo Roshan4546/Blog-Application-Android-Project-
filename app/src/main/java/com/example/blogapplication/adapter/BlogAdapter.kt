@@ -1,37 +1,50 @@
 package com.example.blogapplication.adapter
 
+import BlogItemModel
+import android.content.Intent
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.example.blogapplication.Model.BlogItemModel
-import com.example.blogapplication.databinding.BlogItemBinding
+//import com.example.blogapplication.Model.BlogItemModel
+import com.example.blogapplication.R
+import com.example.blogapplication.ReadMoreActivity
 
-class BlogAdapter(
-    private val items: List<BlogItemModel>
-) : RecyclerView.Adapter<BlogAdapter.BlogViewHolder>() {
+class BlogAdapter(private val blogList: List<BlogItemModel>) :
+    RecyclerView.Adapter<BlogAdapter.BlogViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BlogViewHolder {
-        val binding = BlogItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return BlogViewHolder(binding)
+        val view = LayoutInflater.from(parent.context)
+            .inflate(R.layout.blog_item, parent, false)
+        return BlogViewHolder(view)
     }
 
     override fun onBindViewHolder(holder: BlogViewHolder, position: Int) {
-        holder.bind(items[position]) // Pass listener
+        val blog = blogList[position]
+        holder.title.text = blog.heading2 ?: ""
+        holder.username.text = blog.username2 ?: ""
+        holder.date.text = blog.date2 ?: ""
+        holder.description.text = blog.post2 ?: ""
+        holder.likeCount.text = blog.likeCounts2?.toString() ?: "0"
+
+        // ✅ Correct onClick
+        holder.itemView.setOnClickListener {
+            val context = holder.itemView.context
+            val intent = Intent(context, ReadMoreActivity::class.java)
+            intent.putExtra("blogItem", blog) // blog is Parcelable now
+            context.startActivity(intent)
+        }
+
     }
 
-    override fun getItemCount(): Int = items.size
+    override fun getItemCount() = blogList.size
 
-    inner class BlogViewHolder(private val binding: BlogItemBinding) :
-        RecyclerView.ViewHolder(binding.root) {
-
-        fun bind(blogItemModel: BlogItemModel) {
-            binding.heading2.text = blogItemModel.heading2
-            binding.username2.text = blogItemModel.username2
-            binding.date2.text = blogItemModel.date2
-            binding.post2.text = blogItemModel.post2
-            binding.likeCount2.text = blogItemModel.likeCounts2.toString()
-            
-        }
+    class BlogViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val title: TextView = itemView.findViewById(R.id.heading2)
+        val username: TextView = itemView.findViewById(R.id.username2)
+        val date: TextView = itemView.findViewById(R.id.date2)
+        val description: TextView = itemView.findViewById(R.id.post2)
+        val likeCount: TextView = itemView.findViewById(R.id.likeCount2)
     }
 }

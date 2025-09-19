@@ -24,4 +24,7 @@
     <string name="aug_23_2025">Aug 23, 2025</string>
     <string name="save_article_button">Save article button</string>
     <string name="_20">20</string>
+    <string name="submit">Submit</string>
+    <string name="blog_title">Blog Title</string>
+    <string name="blog_description">Blog Description</string>
 </resources>
