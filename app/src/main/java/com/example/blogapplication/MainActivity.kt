@@ -2,13 +2,12 @@
 
 package com.example.blogapplication
 
-import BlogItemModel
+//import BlogItemModel
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
-//import com.example.blogapplication.Model.BlogItemModel
 import com.example.blogapplication.adapter.BlogAdapter
 import com.example.blogapplication.databinding.ActivityMainBinding
 import com.google.firebase.auth.FirebaseAuth

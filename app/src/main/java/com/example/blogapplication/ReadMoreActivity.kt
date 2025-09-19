@@ -1,6 +1,6 @@
 package com.example.blogapplication
 
-import BlogItemModel
+//import BlogItemModel
 import android.os.Bundle
 import android.widget.TextView
 import android.widget.Toast

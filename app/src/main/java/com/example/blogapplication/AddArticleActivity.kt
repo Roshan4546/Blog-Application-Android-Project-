@@ -1,14 +1,13 @@
 
 package com.example.blogapplication
 
-import BlogItemModel
+//import BlogItemModel
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.provider.ContactsContract.Data
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-//import com.example.blogapplication.Model.BlogItemModel
 import com.example.blogapplication.Model.UserData
 import com.example.blogapplication.databinding.ActivityAddArticleBinding
 import com.google.firebase.auth.FirebaseAuth

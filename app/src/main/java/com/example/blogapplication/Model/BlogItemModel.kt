@@ -1,3 +1,6 @@
+package com.example.blogapplication
+
+
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 

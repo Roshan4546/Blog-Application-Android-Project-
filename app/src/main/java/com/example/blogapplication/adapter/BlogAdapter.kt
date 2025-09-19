@@ -1,13 +1,13 @@
 package com.example.blogapplication.adapter
 
-import BlogItemModel
+//import BlogItemModel
 import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-//import com.example.blogapplication.Model.BlogItemModel
+import com.example.blogapplication.BlogItemModel
 import com.example.blogapplication.R
 import com.example.blogapplication.ReadMoreActivity
 
