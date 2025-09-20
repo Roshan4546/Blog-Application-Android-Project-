@@ -18,6 +18,9 @@ class ReadMoreActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityReadMoreBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        binding.backButton.setOnClickListener{
+            finish()
+        }
         // ✅ Get Parcelable object from intent
         val blogItem = intent.getParcelableExtra<BlogItemModel>("blogItem")
 
