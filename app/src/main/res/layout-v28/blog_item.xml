@@ -11,7 +11,8 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="12dp">
+        android:padding="12dp"
+        android:descendantFocusability="blocksDescendants">
 
         <!-- Blog Heading -->
         <TextView
@@ -129,10 +130,15 @@
             android:layout_height="40dp"
             android:background="@android:color/transparent"
             android:contentDescription="@string/like_button"
+            android:clickable="true"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
             app:srcCompat="@drawable/black_heart"
             app:layout_constraintTop_toTopOf="@id/likeCount2"
             app:layout_constraintBottom_toBottomOf="@id/likeCount2"
             app:layout_constraintStart_toEndOf="@id/likeCount2" />
+
+
 
         <!-- Save Button -->
         <ImageButton

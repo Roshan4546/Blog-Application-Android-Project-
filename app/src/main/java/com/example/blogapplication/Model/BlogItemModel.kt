@@ -6,9 +6,11 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class BlogItemModel(
-    val heading2: String? = null,
-    val username2: String? = null,
-    val date2: String? = null,
-    val post2: String? = null,
-    val likeCounts2: Int? = 0
+    val heading2: String? = "null",
+    val username2: String? = "null",
+    val date2: String? = "null",
+    val post2: String? ="null",
+    var likeCounts2: Int = 0,
+    var postId : String? = "null",
+    val likedBy: MutableList<String>? = null,
 ) : Parcelable
