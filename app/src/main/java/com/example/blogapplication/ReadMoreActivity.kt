@@ -18,7 +18,7 @@ class ReadMoreActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityReadMoreBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        binding.backButton.setOnClickListener{
+        binding.backButton.setOnClickListener {
             finish()
         }
         // ✅ Get Parcelable object from intent
@@ -30,8 +30,7 @@ class ReadMoreActivity : AppCompatActivity() {
             findViewById<TextView>(R.id.userName).text = blogItem.username2
             findViewById<TextView>(R.id.date).text = blogItem.date2
             findViewById<TextView>(R.id.blogDescriptiontextView).text = blogItem.post2
-        }
-        else{
+        } else {
             Toast.makeText(this, "Failed to load blogs", Toast.LENGTH_SHORT).show()
         }
     }

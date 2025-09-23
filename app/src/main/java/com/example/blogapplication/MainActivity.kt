@@ -1,5 +1,3 @@
-
-
 package com.example.blogapplication
 
 //import BlogItemModel
@@ -18,7 +16,6 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 
 
-
 class MainActivity : AppCompatActivity() {
 
     private val binding: ActivityMainBinding by lazy {
@@ -33,11 +30,25 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
+        // to go save article page
+
+        binding.saveArticle.setOnClickListener{
+            startActivity((Intent(this, SavedArticleActivity::class.java)))
+        }
+
+
         auth = FirebaseAuth.getInstance()
         databaseReference = FirebaseDatabase.getInstance(
             "https://blog-app-35da3-default-rtdb.asia-southeast1.firebasedatabase.app/"
         ).getReference("blogs")
 
+        binding.imageView2.setOnClickListener {
+            startActivity(Intent(this, profileActivity::class.java))
+        }
+
+        binding.cardView2.setOnClickListener {
+            startActivity(Intent(this, profileActivity::class.java))
+        }
 
         // RecyclerView setup
         val recyclerView = binding.blogRecyclerview

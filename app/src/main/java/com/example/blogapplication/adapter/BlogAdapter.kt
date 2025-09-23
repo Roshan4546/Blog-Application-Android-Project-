@@ -49,16 +49,19 @@ class BlogAdapter(private val blogList: List<BlogItemModel>) :
                     val count = snapshot.getValue(Int::class.java) ?: 0
                     holder.likeCount.text = count.toString()
                 }
+
                 override fun onCancelled(error: DatabaseError) {}
             })
 
             if (currUser != null) {
-                likesRef.child(currUser.uid).addListenerForSingleValueEvent(object : ValueEventListener {
-                    override fun onDataChange(snapshot: DataSnapshot) {
-                        updateLikeButton(holder, snapshot.exists())
-                    }
-                    override fun onCancelled(error: DatabaseError) {}
-                })
+                likesRef.child(currUser.uid)
+                    .addListenerForSingleValueEvent(object : ValueEventListener {
+                        override fun onDataChange(snapshot: DataSnapshot) {
+                            updateLikeButton(holder, snapshot.exists())
+                        }
+
+                        override fun onCancelled(error: DatabaseError) {}
+                    })
             } else {
                 updateLikeButton(holder, false)
             }
@@ -69,11 +72,14 @@ class BlogAdapter(private val blogList: List<BlogItemModel>) :
 
         // Show save button state based on saved posts in database
         if (currUser != null && postId != null) {
-            val savePostRef = databaseReference.child("users").child(currUser.uid).child("savePosts").child(postId)
+            val savePostRef =
+                databaseReference.child("users").child(currUser.uid).child("savePosts")
+                    .child(postId)
             savePostRef.addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     updateSaveButtonUI(holder, snapshot.exists())
                 }
+
                 override fun onCancelled(error: DatabaseError) {}
             })
         } else {
@@ -85,7 +91,11 @@ class BlogAdapter(private val blogList: List<BlogItemModel>) :
             if (currUser != null && postId != null) {
                 handleLikeButton(postId, holder, currUser.uid)
             } else {
-                Toast.makeText(holder.itemView.context, "You have to login first", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    holder.itemView.context,
+                    "You have to login first",
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         }
 
@@ -94,7 +104,11 @@ class BlogAdapter(private val blogList: List<BlogItemModel>) :
             if (currUser != null && postId != null) {
                 handleSaveButton(postId, holder, currUser.uid)
             } else {
-                Toast.makeText(holder.itemView.context, "You have to login first", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    holder.itemView.context,
+                    "You have to login first",
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         }
 
@@ -118,24 +132,42 @@ class BlogAdapter(private val blogList: List<BlogItemModel>) :
                     // Remove saved post
                     savePostRef.removeValue().addOnSuccessListener {
                         updateSaveButtonUI(holder, false)
-                        Toast.makeText(holder.itemView.context, "Post removed from saved", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(
+                            holder.itemView.context,
+                            "Post removed from saved",
+                            Toast.LENGTH_SHORT
+                        ).show()
                     }.addOnFailureListener { e ->
-                        Toast.makeText(holder.itemView.context, "Failed to remove saved post", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(
+                            holder.itemView.context,
+                            "Failed to remove saved post",
+                            Toast.LENGTH_SHORT
+                        ).show()
                         Log.e("BlogAdapter", "Failed to remove saved post: $e")
                     }
                 } else {
                     // Save post
                     savePostRef.setValue(true).addOnSuccessListener {
                         updateSaveButtonUI(holder, true)
-                        Toast.makeText(holder.itemView.context, "Post saved", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(holder.itemView.context, "Post saved", Toast.LENGTH_SHORT)
+                            .show()
                     }.addOnFailureListener { e ->
-                        Toast.makeText(holder.itemView.context, "Failed to save post", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(
+                            holder.itemView.context,
+                            "Failed to save post",
+                            Toast.LENGTH_SHORT
+                        ).show()
                         Log.e("BlogAdapter", "Failed to save post: $e")
                     }
                 }
             }
+
             override fun onCancelled(error: DatabaseError) {
-                Toast.makeText(holder.itemView.context, "Failed to update saved posts", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    holder.itemView.context,
+                    "Failed to update saved posts",
+                    Toast.LENGTH_SHORT
+                ).show()
                 Log.e("BlogAdapter", "Save post cancelled: ${error.message}")
             }
         })
@@ -159,7 +191,12 @@ class BlogAdapter(private val blogList: List<BlogItemModel>) :
                                 }
                                 return Transaction.success(currentData)
                             }
-                            override fun onComplete(error: DatabaseError?, committed: Boolean, snapshot: DataSnapshot?) {
+
+                            override fun onComplete(
+                                error: DatabaseError?,
+                                committed: Boolean,
+                                snapshot: DataSnapshot?
+                            ) {
                                 updateLikeButton(holder, false)
                             }
                         })
@@ -174,7 +211,12 @@ class BlogAdapter(private val blogList: List<BlogItemModel>) :
                                 currentData.value = currentCount + 1
                                 return Transaction.success(currentData)
                             }
-                            override fun onComplete(error: DatabaseError?, committed: Boolean, snapshot: DataSnapshot?) {
+
+                            override fun onComplete(
+                                error: DatabaseError?,
+                                committed: Boolean,
+                                snapshot: DataSnapshot?
+                            ) {
                                 updateLikeButton(holder, true)
                             }
                         })
@@ -183,6 +225,7 @@ class BlogAdapter(private val blogList: List<BlogItemModel>) :
                     }
                 }
             }
+
             override fun onCancelled(error: DatabaseError) {}
         })
     }

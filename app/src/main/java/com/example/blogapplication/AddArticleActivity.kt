@@ -1,4 +1,3 @@
-
 package com.example.blogapplication
 
 //import BlogItemModel
@@ -27,8 +26,12 @@ class AddArticleActivity : AppCompatActivity() {
         ActivityAddArticleBinding.inflate(layoutInflater)
     }
 
-    private val databaseReference: DatabaseReference = FirebaseDatabase.getInstance("https://blog-app-35da3-default-rtdb.asia-southeast1.firebasedatabase.app/").getReference("blogs")
-    private val userReference: DatabaseReference = FirebaseDatabase.getInstance("https://blog-app-35da3-default-rtdb.asia-southeast1.firebasedatabase.app/").getReference("users")
+    private val databaseReference: DatabaseReference =
+        FirebaseDatabase.getInstance("https://blog-app-35da3-default-rtdb.asia-southeast1.firebasedatabase.app/")
+            .getReference("blogs")
+    private val userReference: DatabaseReference =
+        FirebaseDatabase.getInstance("https://blog-app-35da3-default-rtdb.asia-southeast1.firebasedatabase.app/")
+            .getReference("users")
 
     private val auth: FirebaseAuth = FirebaseAuth.getInstance()  // ✅ Corrected
 
@@ -36,7 +39,7 @@ class AddArticleActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(binding.root)
-        binding.imageButton.setOnClickListener{
+        binding.imageButton.setOnClickListener {
             finish()
         }
         binding.addButton.setOnClickListener {
@@ -50,54 +53,58 @@ class AddArticleActivity : AppCompatActivity() {
             // ✅ Now works fine
             val user: FirebaseUser? = auth.currentUser
 
-            if(user != null){
+            if (user != null) {
                 val userId = user.uid
-                val userName = user.displayName?:"Anonymous"
+                val userName = user.displayName ?: "Anonymous"
 
 
                 // fetch user id and name from database.
 
-                userReference.child(userId).addListenerForSingleValueEvent(object : ValueEventListener {
-                    @SuppressLint("SimpleDateFormat")
-                    override fun onDataChange(snapshot: DataSnapshot) {
-                        val userData = snapshot.getValue(UserData::class.java)
+                userReference.child(userId)
+                    .addListenerForSingleValueEvent(object : ValueEventListener {
+                        @SuppressLint("SimpleDateFormat")
+                        override fun onDataChange(snapshot: DataSnapshot) {
+                            val userData = snapshot.getValue(UserData::class.java)
 
-                        if(userData != null){
-                            val userNameFromDb = userData.name
+                            if (userData != null) {
+                                val userNameFromDb = userData.name
 
-                            val currData = SimpleDateFormat("yyyy-MM-dd").format(Date())
-                            // create a blog item model
+                                val currData = SimpleDateFormat("yyyy-MM-dd").format(Date())
+                                // create a blog item model
 
-                            val blogItem = BlogItemModel(
-                                heading2 = title,
-                                username2 = userNameFromDb,
-                                date2 = currData,
-                                post2 = description,
-                                likeCounts2 = 0,
-                                postId = null
-                            )
+                                val blogItem = BlogItemModel(
+                                    heading2 = title,
+                                    username2 = userNameFromDb,
+                                    date2 = currData,
+                                    post2 = description,
+                                    likeCounts2 = 0,
+                                    postId = null
+                                )
 
-                            // generate a unique blog post.
-                            val key = databaseReference.push().key
-                            if(key != null){
-                                blogItem.postId = key
-                                val blogReference = databaseReference.child(key)
-                                blogReference.setValue(blogItem).addOnCompleteListener{
-                                    if(it.isSuccessful){
-                                        finish()
-                                    }
-                                    else{
-                                        Toast.makeText(this@AddArticleActivity, "Failed to add blog", Toast.LENGTH_SHORT).show()
+                                // generate a unique blog post.
+                                val key = databaseReference.push().key
+                                if (key != null) {
+                                    blogItem.postId = key
+                                    val blogReference = databaseReference.child(key)
+                                    blogReference.setValue(blogItem).addOnCompleteListener {
+                                        if (it.isSuccessful) {
+                                            finish()
+                                        } else {
+                                            Toast.makeText(
+                                                this@AddArticleActivity,
+                                                "Failed to add blog",
+                                                Toast.LENGTH_SHORT
+                                            ).show()
+                                        }
                                     }
                                 }
                             }
                         }
-                    }
 
-                    override fun onCancelled(error: DatabaseError) {
+                        override fun onCancelled(error: DatabaseError) {
 
-                    }
-                })
+                        }
+                    })
             }
         }
     }
