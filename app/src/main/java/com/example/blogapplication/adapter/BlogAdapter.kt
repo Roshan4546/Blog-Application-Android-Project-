@@ -1,5 +1,6 @@
 package com.example.blogapplication.adapter
 
+import android.content.Intent
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -10,6 +11,7 @@ import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.example.blogapplication.BlogItemModel
 import com.example.blogapplication.R
+import com.example.blogapplication.ReadMoreActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 
@@ -75,6 +77,13 @@ class BlogAdapter(private val blogList: List<BlogItemModel>) :
                 Toast.makeText(holder.itemView.context, "You have to login first", Toast.LENGTH_SHORT).show()
             }
         }
+        holder.itemView.setOnClickListener {
+            val context = holder.itemView.context
+            val intent = Intent(context, ReadMoreActivity::class.java)
+            intent.putExtra("blogItem", blog)  // Pass BlogItemModel as Parcelable
+            context.startActivity(intent)
+        }
+
     }
 
     private fun handleLikeButton(postId: String, holder: BlogViewHolder, currUserId: String) {
