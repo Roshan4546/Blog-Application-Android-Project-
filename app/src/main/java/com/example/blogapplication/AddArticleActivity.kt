@@ -38,7 +38,7 @@ class AddArticleActivity : AppCompatActivity() {
         setContentView(binding.root)
         binding.imageButton.setOnClickListener{
             finish()
-        }
+        } 
         binding.addButton.setOnClickListener {
             val title = binding.blogTitle.editText?.text.toString().trim()
             val description = binding.blogDescription.editText?.text.toString().trim()
@@ -69,11 +69,13 @@ class AddArticleActivity : AppCompatActivity() {
                             // create a blog item model
 
                             val blogItem = BlogItemModel(
-                                title,
-                                userNameFromDb,
-                                currData,
-                                description,
-                                0
+                                heading2 = title,
+                                username2 = userNameFromDb,
+                                date2 = currData,
+                                post2 = description,
+                                likeCounts2 = 0,
+                                postId = null,
+                                likedBy = mutableListOf()
                             )
 
                             // generate a unique blog post.

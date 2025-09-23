@@ -1,6 +1,5 @@
 package com.example.blogapplication.adapter
 
-//import BlogItemModel
 import android.content.Intent
 import android.util.Log
 import android.view.LayoutInflater
@@ -16,14 +15,16 @@ import com.example.blogapplication.ReadMoreActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 
 class BlogAdapter(private val blogList: List<BlogItemModel>) :
     RecyclerView.Adapter<BlogAdapter.BlogViewHolder>() {
-    private val DatabaseReference = FirebaseDatabase.getInstance("https://blog-app-35da3-default-rtdb.asia-southeast1.firebasedatabase.app/").reference
-    private val currUserRef = FirebaseAuth.getInstance().currentUser
+
+    private val databaseReference = FirebaseDatabase.getInstance(
+        "https://blog-app-35da3-default-rtdb.asia-southeast1.firebasedatabase.app/"
+    ).reference
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BlogViewHolder {
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.blog_item, parent, false)
@@ -32,110 +33,95 @@ class BlogAdapter(private val blogList: List<BlogItemModel>) :
 
     override fun onBindViewHolder(holder: BlogViewHolder, position: Int) {
         val blog = blogList[position]
-        val postId = blog.postId  // ✅ Correct way
+        val postId = blog.postId
 
         holder.title.text = blog.heading2 ?: ""
         holder.username.text = blog.username2 ?: ""
         holder.date.text = blog.date2 ?: ""
         holder.description.text = blog.post2 ?: ""
-        holder.likeCount.text = blog.likeCounts2?.toString() ?: "0"
+        holder.likeCount.text = blog.likeCounts2.toString()
 
-        // ✅ Correct onClick
         holder.itemView.setOnClickListener {
             val context = holder.itemView.context
             val intent = Intent(context, ReadMoreActivity::class.java)
-            intent.putExtra("blogItem", blog) // blog is Parcelable now
+            intent.putExtra("blogItem", blog)
             context.startActivity(intent)
         }
 
-        // ✅ Reference to likes for this specific blog
-        val postLikeReference = DatabaseReference.child("blogs").child("postId").child("likes")
-        val currUserId = currUserRef?.uid?.let {
-            uid-> postLikeReference.child(uid).addListenerForSingleValueEvent(object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                if(snapshot.exists()){
-                    holder.likeButton.setImageResource(R.drawable.red_heart)
+        val currUser = FirebaseAuth.getInstance().currentUser
+        if (postId != null && currUser != null) {
+            val postLikeReference = databaseReference.child("blogs").child(postId).child("likes")
+            postLikeReference.child(currUser.uid).addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    if (snapshot.exists()) {
+                        holder.likeButton.setImageResource(R.drawable.red_heart)
+                    } else {
+                        holder.likeButton.setImageResource(R.drawable.black_heart)
+                    }
                 }
-                else{
-                    holder.likeButton.setImageResource(R.drawable.black_heart)
-                }
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-
-            }
-
-        })
+                override fun onCancelled(error: DatabaseError) {}
+            })
+        } else {
+            holder.likeButton.setImageResource(R.drawable.black_heart)
         }
-        holder.likeButton.setOnClickListener{
-            if(currUserRef != null){
-                handleLikeButton(postId, blog, holder)
-            }
-            else{
-                Toast.makeText(holder.itemView.context, "You have to login first", Toast.LENGTH_SHORT).show()
 
+        holder.likeButton.setOnClickListener {
+            val currUserNow = FirebaseAuth.getInstance().currentUser
+            if (currUserNow != null && postId != null) {
+                handleLikeButton(postId, blog, holder, currUserNow.uid)
+            } else {
+                Toast.makeText(holder.itemView.context, "You have to login first", Toast.LENGTH_SHORT).show()
             }
         }
     }
 
-    private fun handleLikeButton(postId: String?, blog: BlogItemModel, holder: BlogViewHolder) {
+    private fun handleLikeButton(postId: String, blog: BlogItemModel, holder: BlogViewHolder, currUserId: String) {
+        val userLikesRef = databaseReference.child("users").child(currUserId).child("likes")
+        val postLikesRef = databaseReference.child("blogs").child(postId).child("likes")
 
-        val referUser = DatabaseReference.child("users").child(currUserRef!!.uid)
-        val postLikeReference = DatabaseReference.child("blogs").child("postId").child("likes")
-
-
-        postLikeReference.child(currUserRef.uid).addListenerForSingleValueEvent(object : ValueEventListener {
+        postLikesRef.child(currUserId).addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                if(snapshot.exists()){
-                    referUser.child("likes").child("postId").removeValue().addOnSuccessListener {
-                        postLikeReference.child(currUserRef.uid).removeValue()
-                        blog.likedBy?.remove(currUserRef.uid)
-                        updateLikeButton(holder ,false)
+                if (snapshot.exists()) {
+                    userLikesRef.child(postId).removeValue().addOnSuccessListener {
+                        postLikesRef.child(currUserId).removeValue()
+                        blog.likedBy?.remove(currUserId)
+                        updateLikeButton(holder, false)
 
-
-                        val newLikedCount = blog.likeCounts2-1
-                        blog.likeCounts2 = newLikedCount
-                        DatabaseReference.child("blogs").child("postId").child("likeCounts2").setValue(newLikedCount)
-
-                        notifyDataSetChanged()
-                    }.addOnFailureListener{ e->
-                            Log.e("likedClicked", "onDataChange: Failed to unliked blog $e ", )
-                        }
-                }
-                else{
-                    referUser.child("likes").child("postId").setValue(true).addOnSuccessListener {
-                        postLikeReference.child(currUserRef.uid).setValue(true)
-                        blog.likedBy?.add(currUserRef.uid)
-                        updateLikeButton(holder,true)
-
-
-                        val newLikeCount = blog.likeCounts2+1
+                        val newLikeCount = blog.likeCounts2 - 1
                         blog.likeCounts2 = newLikeCount
-                        DatabaseReference.child("blogs").child("postId").child("likeCounts2").setValue(newLikeCount)
+                        databaseReference.child("blogs").child(postId).child("likeCounts2").setValue(newLikeCount)
+                        holder.likeCount.text = newLikeCount.toString()
                         notifyDataSetChanged()
+                    }.addOnFailureListener { e ->
+                        Log.e("likeClicked", "Failed to unlike blog: $e")
                     }
-                        .addOnFailureListener{e->
-                            Log.e("likedClicked", "onDataChange: Failed to liked blog $e ", )
+                } else {
+                    userLikesRef.child(postId).setValue(true).addOnSuccessListener {
+                        postLikesRef.child(currUserId).setValue(true)
+                        blog.likedBy?.add(currUserId)
+                        updateLikeButton(holder, true)
 
-                        }
+                        val newLikeCount = blog.likeCounts2 + 1
+                        blog.likeCounts2 = newLikeCount
+                        databaseReference.child("blogs").child(postId).child("likeCounts2").setValue(newLikeCount)
+                        holder.likeCount.text = newLikeCount.toString()
+                        notifyDataSetChanged()
+                    }.addOnFailureListener { e ->
+                        Log.e("likeClicked", "Failed to like blog: $e")
+                    }
                 }
             }
-
-            override fun onCancelled(error: DatabaseError) {
-            }
-
+            override fun onCancelled(error: DatabaseError) {}
         })
     }
 
     private fun updateLikeButton(holder: BlogViewHolder, liked: Boolean) {
-        if(liked){
+        if (liked) {
+            holder.likeButton.setImageResource(R.drawable.red_heart)
+        } else {
             holder.likeButton.setImageResource(R.drawable.black_heart)
         }
-        else{
-            holder.likeButton.setImageResource(R.drawable.red_heart)
-        }
     }
-
 
     override fun getItemCount() = blogList.size
 

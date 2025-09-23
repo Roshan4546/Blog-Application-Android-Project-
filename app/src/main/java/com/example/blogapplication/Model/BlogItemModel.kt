@@ -11,6 +11,6 @@ data class BlogItemModel(
     val date2: String? = "null",
     val post2: String? ="null",
     var likeCounts2: Int = 0,
-    var postId : String? = "null",
-    val likedBy: MutableList<String>? = null,
+    var postId : String? = null,
+    var likedBy: MutableList<String>? = mutableListOf(),
 ) : Parcelable
