@@ -19,34 +19,18 @@
             android:id="@+id/heading2"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
+            android:layout_marginEnd="14dp"
             android:fontFamily="@font/montserrat_semibold"
             android:maxLines="2"
             android:text="@string/please_start_writing_git_commits"
             android:textColor="@color/blue"
             android:textSize="16sp"
             android:textStyle="bold"
+            app:layout_constraintEnd_toStartOf="@id/username2"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/username2" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <!-- Profile Image -->
-        <androidx.cardview.widget.CardView
-            android:id="@+id/cardView32"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            app:cardCornerRadius="20dp"
-            app:cardElevation="3dp"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/username2">
-
-            <ImageView
-                android:id="@+id/profileimage22"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:scaleType="centerCrop"
-                android:src="@drawable/p1" />
-        </androidx.cardview.widget.CardView>
 
         <!-- Username -->
         <TextView
