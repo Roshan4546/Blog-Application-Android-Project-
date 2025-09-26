@@ -35,26 +35,29 @@ class ArticleActivity : AppCompatActivity() {
         val curruserId = auth.currentUser?.uid
         val recyclerView = binding.articleRecycle
         recyclerView.layoutManager = LinearLayoutManager(this)
+        if (curruserId != null) {
 
-        blogAdapter =
-            ArticleAdpater(this, emptyList(), object : ArticleAdpater.OnItemClickListener {
-                override fun onEdit(blogItem: BlogItemModel) {
-                    val intent = Intent(this@ArticleActivity, EditActivity::class.java)
-                    intent.putExtra("blogItem", blogItem)
-                    startActivityForResult(intent, Edit_Blog_Req)
-                }
 
-                override fun onRead(blogItem: BlogItemModel) {
-                    val intent = Intent(this@ArticleActivity, ReadMoreActivity::class.java)
-                    intent.putExtra("blogItem", blogItem)
-                    startActivity(intent)
-                }
+            blogAdapter =
+                ArticleAdpater(this, emptyList(), object : ArticleAdpater.OnItemClickListener {
+                    override fun onEdit(blogItem: BlogItemModel) {
+                        val intent = Intent(this@ArticleActivity, EditActivity::class.java)
+                        intent.putExtra("blogItem", blogItem)
+                        startActivityForResult(intent, Edit_Blog_Req)
+                    }
 
-                override fun onDelete(blogItem: BlogItemModel) {
-                    deleteBlogPost(blogItem)
-                }
+                    override fun onRead(blogItem: BlogItemModel) {
+                        val intent = Intent(this@ArticleActivity, ReadMoreActivity::class.java)
+                        intent.putExtra("blogItem", blogItem)
+                        startActivity(intent)
+                    }
 
-            })
+                    override fun onDelete(blogItem: BlogItemModel) {
+                        deleteBlogPost(blogItem)
+                    }
+
+                })
+        }
         recyclerView.adapter = blogAdapter
         // get data from Database
 
