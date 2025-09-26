@@ -42,7 +42,7 @@ class AddArticleActivity : AppCompatActivity() {
         binding.imageButton.setOnClickListener {
             finish()
         }
-        binding.addButton.setOnClickListener {
+        binding.addbutton.setOnClickListener {
             val title = binding.blogTitle.editText?.text.toString().trim()
             val description = binding.blogDescription.editText?.text.toString().trim()
 
@@ -76,6 +76,7 @@ class AddArticleActivity : AppCompatActivity() {
                                     heading2 = title,
                                     username2 = userNameFromDb,
                                     date2 = currData,
+                                    userId = null,
                                     post2 = description,
                                     likeCounts2 = 0,
                                     postId = null
