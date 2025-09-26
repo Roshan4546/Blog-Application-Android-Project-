@@ -10,7 +10,7 @@ data class BlogItemModel(
     val username2: String? = null,
     val date2: String? = null,
     var post2: String? = null,
-    val userId : String?=null,
+    val userId: String? = null,
     var isSaved: Boolean = false,
     var likeCounts2: Int = 0,
     var postId: String? = null

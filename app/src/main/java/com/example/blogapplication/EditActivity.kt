@@ -4,12 +4,11 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import com.example.blogapplication.databinding.ActivityEditBinding
 import com.google.firebase.database.FirebaseDatabase
 
 class EditActivity : AppCompatActivity() {
+
     private val binding: ActivityEditBinding by lazy {
         ActivityEditBinding.inflate(layoutInflater)
     }
@@ -19,46 +18,53 @@ class EditActivity : AppCompatActivity() {
         enableEdgeToEdge()
         setContentView(binding.root)
 
+        binding.imageButton.setOnClickListener {
+            finish()
+        }
+
+        // Get the blog item from intent
         val blogItemModel = intent.getParcelableExtra<BlogItemModel>("blogItem")
 
+        // Set current values in edit texts
         binding.blogTitle.editText?.setText(blogItemModel?.heading2)
         binding.blogDescription.editText?.setText(blogItemModel?.post2)
 
-        binding.addbutton.setOnClickListener{
-            val upDatedTitle = binding.blogTitle.editText.toString().trim()
-            val upDatedDescription = binding.blogDescription.editText.toString().trim()
+        binding.addbutton.setOnClickListener {
+            val updatedTitle = binding.blogTitle.editText?.text.toString().trim()
+            val updatedDescription = binding.blogDescription.editText?.text.toString().trim()
 
+            if (updatedTitle.isEmpty() || updatedDescription.isEmpty()) {
+                Toast.makeText(this, "Please fill all the details", Toast.LENGTH_SHORT).show()
+            } else {
+                blogItemModel?.heading2 = updatedTitle
+                blogItemModel?.post2 = updatedDescription
 
-            if(upDatedTitle.isEmpty() && upDatedDescription.isEmpty()){
-                Toast.makeText(this, "Please Fill all the details", Toast.LENGTH_SHORT).show()
-            }
-            else{
-                blogItemModel?.heading2 = upDatedTitle
-                blogItemModel?.post2 = upDatedDescription
-
-                if(blogItemModel != null){
-                    updatedDatabase(blogItemModel)
+                if (blogItemModel != null) {
+                    updateDatabase(blogItemModel)
                 }
             }
         }
     }
 
-    private fun updatedDatabase(blogItemModel: BlogItemModel) {
-        val databaseRefer = FirebaseDatabase.getInstance("https://blog-app-35da3-default-rtdb.asia-southeast1.firebasedatabase.app/")
-            .getReference("blogs")
-        val postId = blogItemModel.postId
+    private fun updateDatabase(blogItemModel: BlogItemModel) {
+        val databaseRef = FirebaseDatabase.getInstance(
+            "https://blog-app-35da3-default-rtdb.asia-southeast1.firebasedatabase.app/"
+        ).getReference("blogs")
+        val postId = blogItemModel.postId ?: return
 
-        if (postId != null) {
-            databaseRefer.child(postId).setValue(blogItemModel)
-                .addOnSuccessListener {
-                    Toast.makeText(this, "Blog Updated Successfully", Toast.LENGTH_SHORT).show()
-                    finish()
-                }
-                .addOnFailureListener {
-                    Toast.makeText(this, "Blog Updated Unsuccessfully", Toast.LENGTH_SHORT).show()
-                }
-        } else {
-            Toast.makeText(this, "Invalid post ID", Toast.LENGTH_SHORT).show()
-        }
+        // Only update title and description, preserve other fields like likes
+        val updates = mapOf(
+            "heading2" to blogItemModel.heading2,
+            "post2" to blogItemModel.post2
+        )
+
+        databaseRef.child(postId).updateChildren(updates)
+            .addOnSuccessListener {
+                Toast.makeText(this, "Blog Updated Successfully", Toast.LENGTH_SHORT).show()
+                finish()
+            }
+            .addOnFailureListener {
+                Toast.makeText(this, "Blog Update Failed", Toast.LENGTH_SHORT).show()
+            }
     }
 }
